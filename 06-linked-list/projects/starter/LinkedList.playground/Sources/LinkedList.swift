@@ -138,7 +138,23 @@ public struct LinkedList<Value> {
         return current.value
     }
     
+    @discardableResult
+    public mutating func remove(after node: Node<Value>) -> Value? {
+        copyNodes()
+        defer {
+            if node.next === tail {
+                tail = node
+            }
+            node.next = node.next?.next
+        }
+        return node.next?.value
+    }
+    
     private mutating func copyNodes() {
+        guard !isKnownUniquelyReferenced(&head) else {
+          return
+        }
+        
         guard var oldNode = head else {
             return
         }
