@@ -62,6 +62,18 @@ public struct LinkedList<Value> {
         }
     }
     
+    @discardableResult
+    public mutating func insert(_ value: Value, after node: Node<Value>) -> Node<Value>? {
+      // 这里也需要改为 copyNodes(returningCopyOf:) 而不是 copyNodes()
+      guard let node = copyNodes(returningCopyOf: node) else { return nil }
+      guard tail !== node else {
+        append(value)
+        return tail!
+      }
+      node.next = Node(value: value, next: node.next)
+      return node.next!
+    }
+    
     public mutating func pop() -> Value? {
         copyNodes()
         defer {
@@ -178,7 +190,8 @@ public struct LinkedList<Value> {
     
     private mutating func copyNodes(returningCopyOf node: Node<Value>?) -> Node<Value>? {
       guard !isKnownUniquelyReferenced(&head) else {
-        return nil
+          // 这里需要返回 node 而不是 nil
+          return node
       }
       guard var oldNode = head else {
         return nil
@@ -196,7 +209,11 @@ public struct LinkedList<Value> {
         newNode = newNode!.next
         oldNode = nextOldNode
       }
-        
+        // 这里需要重复调用一遍，否则 node 为表尾是会被忽略
+        if oldNode === node {
+            nodeCopy = newNode
+        }
+        // 这里也需要添加这一行，否则表尾结点没有记录
       tail = newNode
       return nodeCopy
     }
