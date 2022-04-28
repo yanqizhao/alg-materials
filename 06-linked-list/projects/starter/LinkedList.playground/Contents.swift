@@ -5,10 +5,10 @@ example(of: "creating and linking nodes") {
     let node1 = Node(value: 1)
     let node2 = Node(value: 2)
     let node3 = Node(value: 3)
-    
+
     node1.next = node2
     node2.next = node3
-    
+
     print(node1)
 }
 
@@ -37,7 +37,7 @@ example(of: "pop") {
     list.insert(at: 0, value: 0)
     list.insert(at: 10, value: 10)
     list.insert(at: 2, value: 222)
-    
+
     print(list.pop() as Any)
     print(list)
 }
@@ -111,4 +111,10 @@ example(of: "linked list cow") {
   list2.append(3)
   print("List1: \(list1)")
   print("List2: \(list2)")
+    
+    print("Removing middle node on list2")
+    if let node = list2.node(at: 0) {
+      list2.remove(after: node)
+    }
+    print("List2: \(list2)")
 }

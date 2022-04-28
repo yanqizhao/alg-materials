@@ -140,7 +140,11 @@ public struct LinkedList<Value> {
     
     @discardableResult
     public mutating func remove(after node: Node<Value>) -> Value? {
-        copyNodes()
+        // 这里移除的 node 是原先链表里的 node，而使用 copyNodes 之后创建了新的一个链表
+        // 所以移除的 node 是旧链表的结点
+        // copyNodes()
+        // 在创建新链表的过程中，找到与 node 对应的结点并返回到这里
+        guard let node = copyNodes(returningCopyOf: node) else { return nil }
         defer {
             if node.next === tail {
                 tail = node
@@ -170,6 +174,31 @@ public struct LinkedList<Value> {
         }
         
         tail = newNode
+    }
+    
+    private mutating func copyNodes(returningCopyOf node: Node<Value>?) -> Node<Value>? {
+      guard !isKnownUniquelyReferenced(&head) else {
+        return nil
+      }
+      guard var oldNode = head else {
+        return nil
+      }
+
+      head = Node(value: oldNode.value)
+      var newNode = head
+      var nodeCopy: Node<Value>?
+
+      while let nextOldNode = oldNode.next {
+        if oldNode === node {
+          nodeCopy = newNode
+        }
+        newNode!.next = Node(value: nextOldNode.value)
+        newNode = newNode!.next
+        oldNode = nextOldNode
+      }
+        
+      tail = newNode
+      return nodeCopy
     }
 }
 
