@@ -9,9 +9,35 @@
 extension LinkedList {
     
   mutating func reverse() {
-    
+//      var node = self.head
+//      var reverseList = LinkedList<Value>()
+//      while node != nil {
+//          reverseList.push(node!.value)
+//          node = node!.next
+//      }
+//      self = reverseList
+      tail = head
+      var prev = head
+      var current = head?.next
+      prev?.next = nil
+      
+      while current != nil {
+          let next = current?.next
+          current?.next = prev
+          prev = current
+          current = next
+      }
+      head = prev
   }
 }
 
-
+example(of: "Reverse a linked list") {
+    var list = LinkedList<Int>()
+    list.append(1)
+    list.append(2)
+    list.append(3)
+    print(list)
+    list.reverse()
+    print(list)
+}
 //: [Next Challenge](@next)
