@@ -9,8 +9,8 @@
 
 extension LinkedList where Value: Equatable {
   mutating func removeAll(_ value: Value) {
-      if head?.value == value {
-          head = head?.next
+      while let head = self.head, head.value == value {
+          self.head = head.next
       }
       
       var prevNode = self.head
@@ -40,6 +40,6 @@ example(of: "Remove all occurrences of a specific element") {
     list.append(4)
     list.append(9)
     list.append(17)
-    list.removeAll(17)
+    list.removeAll(4)
     print(list)
 }
